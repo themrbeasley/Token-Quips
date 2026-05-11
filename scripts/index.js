@@ -7,6 +7,7 @@ import {api} from "./apps/api.js";
 import {activeEffectToWorkflowData, chatMessageToWorkflowData, combatTurnToWorkflowData, damageToWorkflowData, midiToWorkflowData, movementToWorkflowData, pf2eItemToWorkflowData} from "./apps/helpers.js";
 import { says } from "./apps/says.js";
 import { buildInterface, foundryInterface } from './foundry-interface.js'
+import { TokenSaysMigration, TokenSaysMigrationApp } from "./apps/migration.js";
 
 export var tokenSaysHasPolyglot = false, tokenSaysHasMQ = false;
 
@@ -156,7 +157,31 @@ Hooks.once('init', async function() {
         config: false,
         default: {},
         type: Object
-    }); 
+    });
+
+    game.settings.register(module, 'migrationDismissed', {
+        scope: 'client',
+        config: false,
+        default: false,
+        type: Boolean
+    });
+
+    game.settings.register(module, 'migration-backup', {
+        scope: 'world',
+        config: false,
+        default: {},
+        type: Object
+    });
+
+    if (game.modules.get('token-says')) {
+        game.settings.registerMenu(module, "migrateTool", {
+            name: game.i18n.localize("TOKENSAYS.migration.settingsMenu.name"),
+            label: game.i18n.localize("TOKENSAYS.migration.settingsMenu.label"),
+            icon: "fas fa-file-import",
+            type: TokenSaysMigrationApp,
+            restricted: true
+        });
+    }
 
     const {SHIFT, CONTROL, ALT} = KeyboardManager.MODIFIER_KEYS;
     game.keybindings.register(module, 'prompt', {
@@ -326,6 +351,7 @@ Hooks.once('init', async function() {
       });
 
     tokenSays.initialize();
+    TokenSaysMigration.checkAndPrompt();
     setModsAvailable();
     _determineWorldOptions();
 

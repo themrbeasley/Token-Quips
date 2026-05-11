@@ -233,6 +233,34 @@
       "token-not-found": "The following token names were not found in any scene in this world: ",
       "rollable-table-not-found": "A rollable table with this name does not exist in this world or the associated compendium:",
       "playlist-not-found": "A playlist with this name does not exist in this world or the associated compendium:"
+    },
+    "migration": {
+      "prompt": {
+        "title": "Token Says Data Detected",
+        "body": "An installation of Token Says was detected. Would you like to migrate your Token Says data (sayings, configuration, and per-token data) to Token Quips?",
+        "migrate": "Migrate",
+        "notNow": "Not Now",
+        "dontAskAgain": "Don't Ask Again"
+      },
+      "summary": {
+        "title": "Migration Complete",
+        "body": "Migrated {rules} world sayings, {players} player sayings, and token data across {scenes} scenes. A backup has been saved to module settings.",
+        "download": "Download Backup",
+        "close": "Close"
+      },
+      "deactivate": {
+        "title": "Deactivate Token Says?",
+        "body": "Token Says is still active. Having both modules active may cause duplicate behavior. Deactivate Token Says and reload the world?",
+        "confirm": "Confirm",
+        "close": "Close"
+      },
+      "progress": "Migrating token data: scene {current} of {total}",
+      "error": "Token Says migration failed. A backup was saved to module settings before the error occurred. Check the console for details.",
+      "dualActiveWarning": "Token Says is also active — this may cause duplicate behavior. Please disable Token Says.",
+      "settingsMenu": {
+        "name": "Migrate Token Says Data",
+        "label": "Migrate"
+      }
     }
   }
 }
