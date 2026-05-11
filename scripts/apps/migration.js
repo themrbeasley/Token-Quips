@@ -299,6 +299,10 @@ export class TokenSaysMigrationApp extends FormApplication {
     async _updateObject() {}
 
     render(force, options) {
+        if (!TokenSaysMigration.isTokenSaysInstalled()) {
+            ui.notifications.info(game.i18n.localize("TOKENSAYS.migration.notInstalled"));
+            return this;
+        }
         TokenSaysMigration.promptMigration();
         return this;
     }

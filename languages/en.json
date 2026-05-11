@@ -256,6 +256,7 @@
       },
       "progress": "Migrating token data: scene {current} of {total}",
       "error": "Token Says migration failed. A backup was saved to module settings before the error occurred. Check the console for details.",
+      "notInstalled": "Token Says is not installed — there is nothing to migrate.",
       "dualActiveWarning": "Token Says is also active — this may cause duplicate behavior. Please disable Token Says.",
       "settingsMenu": {
         "name": "Migrate Token Says Data",
