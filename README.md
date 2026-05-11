@@ -228,6 +228,43 @@ const options = {
 ```
 ---
 
+# Migrating from Token Says
+
+If you previously used **Token Says**, Token Quips can automatically migrate your data.
+
+### What gets migrated
+
+- All world sayings (rules)
+- All configuration settings (separator, pan, audio duration, conditions, etc.)
+- Player-created sayings (per-user flags)
+- Per-token data (play counts, limits) across all scenes
+
+### How it works
+
+1. Install and activate Token Quips
+2. On the first world load, a dialog will ask if you want to migrate your Token Says data
+3. Choose **Migrate** to start the process — a backup is created automatically before any data is modified
+4. A summary shows what was migrated and offers a backup download
+5. If Token Says is still active, you will be prompted to deactivate it
+
+### Manual migration
+
+If you dismissed the prompt, you can trigger migration manually:
+
+1. Open **Game Settings** > **Module Settings**
+2. Find the **Token Quips** section
+3. Click **Migrate** (only visible when Token Says is installed)
+
+### Backup and recovery
+
+A backup of your original Token Says data is automatically saved to Token Quips module settings before migration begins. You can also download this backup as a JSON file from the migration summary dialog.
+
+### After migration
+
+Once migration is complete, you can safely uninstall Token Says from your module list. Your original Token Says data is left untouched in the world database — uninstalling the module will clean it up.
+
+---
+
 # Enhancements & Suggestions
 
 Have an idea to improve Token Quips?
