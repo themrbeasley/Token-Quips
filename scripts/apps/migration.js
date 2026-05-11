@@ -61,4 +61,26 @@ export class TokenSaysMigration {
         }
         return tokenFlags;
     }
+
+    static async backup() {
+        const backupData = {
+            timestamp: new Date().toISOString(),
+            worldSettings: this._collectOldWorldSettings(),
+            userFlags: this._collectOldUserFlags(),
+            tokenFlags: this._collectOldTokenFlags()
+        };
+        await game.settings.set(tokenSays.ID, 'migration-backup', backupData);
+        tokenSays.log(false, 'Migration backup saved', backupData);
+        return backupData;
+    }
+
+    static downloadBackup() {
+        const backupData = game.settings.get(tokenSays.ID, 'migration-backup');
+        const date = new Date().toISOString().split('T')[0];
+        saveDataToFile(
+            JSON.stringify(backupData, null, 2),
+            "application/json",
+            `token-says-backup-${date}.json`
+        );
+    }
 }
