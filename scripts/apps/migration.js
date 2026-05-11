@@ -37,7 +37,7 @@ export class TokenSaysMigration {
     static _collectOldUserFlags() {
         const userFlags = {};
         for (const user of game.users) {
-            const rules = user.getFlag(this.OLD_MODULE_ID, 'rules');
+            const rules = user.flags?.[this.OLD_MODULE_ID]?.rules;
             if (rules && Object.keys(rules).length > 0) {
                 userFlags[user.id] = { rules };
             }
@@ -50,7 +50,7 @@ export class TokenSaysMigration {
         for (const scene of game.scenes) {
             const sceneTokens = {};
             for (const token of scene.tokens) {
-                const sayingFlags = token.getFlag(this.OLD_MODULE_ID, tokenSays.FLAGS.SAYING);
+                const sayingFlags = token.flags?.[this.OLD_MODULE_ID]?.[tokenSays.FLAGS.SAYING];
                 if (sayingFlags && Object.keys(sayingFlags).length > 0) {
                     sceneTokens[token.id] = { [tokenSays.FLAGS.SAYING]: sayingFlags };
                 }
