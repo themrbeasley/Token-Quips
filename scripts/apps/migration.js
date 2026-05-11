@@ -191,4 +191,115 @@ export class TokenSaysMigration {
             ui.notifications.error(game.i18n.localize("TOKENSAYS.migration.error"));
         }
     }
+
+    static promptMigration() {
+        new Dialog({
+            title: game.i18n.localize("TOKENSAYS.migration.prompt.title"),
+            content: `<p>${game.i18n.localize("TOKENSAYS.migration.prompt.body")}</p>`,
+            buttons: {
+                migrate: {
+                    icon: '<i class="fas fa-file-import"></i>',
+                    label: game.i18n.localize("TOKENSAYS.migration.prompt.migrate"),
+                    callback: () => this.migrate()
+                },
+                later: {
+                    icon: '<i class="fas fa-clock"></i>',
+                    label: game.i18n.localize("TOKENSAYS.migration.prompt.notNow")
+                },
+                never: {
+                    icon: '<i class="fas fa-times"></i>',
+                    label: game.i18n.localize("TOKENSAYS.migration.prompt.dontAskAgain"),
+                    callback: () => game.settings.set(tokenSays.ID, 'migrationDismissed', true)
+                }
+            },
+            default: "migrate"
+        }).render(true);
+    }
+
+    static showSummary(results) {
+        const body = game.i18n.format("TOKENSAYS.migration.summary.body", {
+            rules: results.rulesCount,
+            players: results.playerSayingsCount,
+            scenes: results.sceneCount
+        });
+
+        new Dialog({
+            title: game.i18n.localize("TOKENSAYS.migration.summary.title"),
+            content: `<p>${body}</p>`,
+            buttons: {
+                download: {
+                    icon: '<i class="fas fa-download"></i>',
+                    label: game.i18n.localize("TOKENSAYS.migration.summary.download"),
+                    callback: () => {
+                        this.downloadBackup();
+                        this._afterSummary();
+                    }
+                },
+                close: {
+                    icon: '<i class="fas fa-check"></i>',
+                    label: game.i18n.localize("TOKENSAYS.migration.summary.close"),
+                    callback: () => this._afterSummary()
+                }
+            },
+            default: "close"
+        }).render(true);
+    }
+
+    static _afterSummary() {
+        if (this.isTokenSaysActive()) {
+            this.promptDeactivation();
+        }
+    }
+
+    static promptDeactivation() {
+        new Dialog({
+            title: game.i18n.localize("TOKENSAYS.migration.deactivate.title"),
+            content: `<p>${game.i18n.localize("TOKENSAYS.migration.deactivate.body")}</p>`,
+            buttons: {
+                confirm: {
+                    icon: '<i class="fas fa-power-off"></i>',
+                    label: game.i18n.localize("TOKENSAYS.migration.deactivate.confirm"),
+                    callback: async () => {
+                        const config = game.settings.get("core", "moduleConfiguration");
+                        config[this.OLD_MODULE_ID] = false;
+                        await game.settings.set("core", "moduleConfiguration", config);
+                        window.location.reload();
+                    }
+                },
+                close: {
+                    icon: '<i class="fas fa-times"></i>',
+                    label: game.i18n.localize("TOKENSAYS.migration.deactivate.close")
+                }
+            },
+            default: "confirm"
+        }).render(true);
+    }
+
+    static checkAndPrompt() {
+        if (!game.user.isGM) return;
+        if (!this.isTokenSaysInstalled()) return;
+
+        if (this.isTokenSaysActive()) {
+            ui.notifications.warn(game.i18n.localize("TOKENSAYS.migration.dualActiveWarning"));
+        }
+
+        if (!game.settings.get(tokenSays.ID, 'migrationDismissed')) {
+            this.promptMigration();
+        }
+    }
+}
+
+export class TokenSaysMigrationApp extends FormApplication {
+    static get defaultOptions() {
+        return foundry.utils.mergeObject(super.defaultOptions, {
+            id: "token-quips-migration"
+        });
+    }
+
+    async _updateObject() {}
+
+    render(force, options) {
+        TokenSaysMigration.promptMigration();
+        return this;
+    }
 }
