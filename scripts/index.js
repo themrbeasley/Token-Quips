@@ -173,15 +173,13 @@ Hooks.once('init', async function() {
         type: Object
     });
 
-    if (game.modules.get('token-says')) {
-        game.settings.registerMenu(module, "migrateTool", {
-            name: game.i18n.localize("TOKENSAYS.migration.settingsMenu.name"),
-            label: game.i18n.localize("TOKENSAYS.migration.settingsMenu.label"),
-            icon: "fas fa-file-import",
-            type: TokenSaysMigrationApp,
-            restricted: true
-        });
-    }
+    game.settings.registerMenu(module, "migrateTool", {
+        name: game.i18n.localize("TOKENSAYS.migration.settingsMenu.name"),
+        label: game.i18n.localize("TOKENSAYS.migration.settingsMenu.label"),
+        icon: "fas fa-file-import",
+        type: TokenSaysMigrationApp,
+        restricted: true
+    });
 
     const {SHIFT, CONTROL, ALT} = KeyboardManager.MODIFIER_KEYS;
     game.keybindings.register(module, 'prompt', {
