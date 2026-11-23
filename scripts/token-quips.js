@@ -72,24 +72,24 @@ export class tokenSays {
      * @param {object} message 
      */
     static _insertHTMLToPolyglotMessage(chatMessage, html, message) {
-        let img = chatMessage.flags.TOKENSAYS.img;
-        if(img){
-            let content = html.find(".message-content");
-            let translatedContent = html.find(".polyglot-original-text");
-            let common = 0;
-            let contentText = '';
-            if(!translatedContent.length) {
-                common = 1;
-                contentText = '<span>' + chatMessage.content + '</span>';
-            }
-            let newContent='<div class="token-quips chat-window" style="margin-bottom:6px;">'+ img + '<div class="what-is-said">' + contentText + '</div></div>';
-            if(common) {
-                $(content).empty().append(newContent);
-            } else {
-                $(newContent).prependTo(content);
-                let contentSays = html.find('.what-is-said');
-                translatedContent.prependTo(contentSays);
-            }
+        const img = chatMessage.flags.TOKENSAYS.img;
+        if(!img) return;
+        // v12 passes jQuery, v13+ passes an HTMLElement
+        const root = html instanceof HTMLElement ? html : html[0];
+        const content = root?.querySelector(".message-content");
+        if(!content) return;
+        const translated = root.querySelector(".polyglot-original-text");
+        const common = !translated;
+        const contentText = common ? '<span>' + chatMessage.content + '</span>' : '';
+        const wrapper = document.createElement('div');
+        wrapper.className = 'token-quips chat-window';
+        wrapper.style.marginBottom = '6px';
+        wrapper.innerHTML = img + '<div class="what-is-said">' + contentText + '</div>';
+        if(common) {
+            content.replaceChildren(wrapper);
+        } else {
+            content.prepend(wrapper);
+            wrapper.querySelector('.what-is-said').prepend(translated);
         }
     }
 

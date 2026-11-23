@@ -320,12 +320,18 @@ export class tokenSay {
         return (!this.hasWhisper || this.whisper.find(u => u.id === this.user)) ? false : true
     }
 
+    /** Chat sidebar element is jQuery on v12 and an HTMLElement on v13+ */
+    _polyglotSelectValue(){
+        const el = ui.chat.element
+        return (el instanceof HTMLElement ? el : el?.[0])?.querySelector("select[name=polyglot-language]")?.value
+    }
+
     get lang(){
         return this._say.lang
     }
 
     get language(){
-        return !tokenSaysHasPolyglot ? false : (this.lang ? this.lang : (this.documentType === 'reacts' ? false : ui.chat.element.find("select[name=polyglot-language]").val()))
+        return !tokenSaysHasPolyglot ? false : (this.lang ? this.lang : (this.documentType === 'reacts' ? false : this._polyglotSelectValue()))
     }
 
     get likelihoodMet(){
@@ -599,11 +605,15 @@ export class tokenSay {
         const messageData = {
             blind: this.hideMessageFromUser,
             speaker: this.speaker,
-            type: foundryInterface.chatMessageTypes.IC,
+            [foundryInterface.chatMessageKey]: foundryInterface.chatMessageTypes.IC,
             flags: {TOKENSAYS: {cancel: true, img: img}} 
         };
 
-        if(this.language) messageData['lang'] = this.language
+        if(this.language) {
+            messageData['lang'] = this.language
+            // Current Polyglot reads the language from this flag, not from `lang`
+            messageData.flags.polyglot = {language: this.language}
+        }
         messageData['content'] = tokenSaysHasPolyglot ?  `${this.quotes}${this.message}${this.quotes}` : `<div class="token-quips chat-window">${img}<div class="what-is-said">${this.quotes}${this.message}${this.quotes}</div></div>`;
         
         if(!this.hideMessageFromUser) {

@@ -377,7 +377,8 @@ Hooks.once('init', async function() {
         });
     }
     if (tokenSaysHasPolyglot){
-        Hooks.on("renderChatMessage", (chatMessage, html, message) => {
+        // renderChatMessage (jQuery) was replaced by renderChatMessageHTML (HTMLElement) in v13
+        Hooks.on(parseInt((game.version ?? game.release?.version ?? "0").split(".")[0], 10) >= 13 ? "renderChatMessageHTML" : "renderChatMessage", (chatMessage, html, message) => {
             if(chatMessage.flags?.TOKENSAYS?.img && chatMessage.flags?.polyglot){
                 tokenSays._insertHTMLToPolyglotMessage(chatMessage, html, message);
             }
